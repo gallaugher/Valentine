@@ -11,7 +11,7 @@ import AVFoundation
 
 // We need to declare the two additional delegate protocols below in order to use a UIImagePickerController
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
-
+    
     // MARK: Properties
     
     // We added a tap gesture to this image & created an @IBAction below for this tap gesture so that we can detect if we tap on the image
@@ -29,12 +29,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         // The UIImagePicker's delegate property needs to be assigned to self (which is the current view controller).  Note that it's done in viewDidLoad here, which is the answer to one of our exercise questions.
         imagePicker.delegate = self
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     // MARK: Functions
     
     // Called to make the image spring when pressed
@@ -49,7 +49,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         // then animate it back out to the original bounds, usingSpringWithDamping will give it some bounce.
         // withDuration is in seconds, usingSpringWithDamping will have no spring at 1, so 0.2 is pretty springy. initialSpringVelocity determines how strong the spring starts off. Higher numbers are 'stronger'.
-        UIView.animate(withDuration: 0.25, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: [], animations: { self.imageToPunch.bounds = bounds }, completion: nil)
+        UIView.animate(withDuration: 0.75, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: [], animations: { self.imageToPunch.bounds = bounds }, completion: {finish in
+            let bounds = self.imageToPunch.bounds
+            // we'll shrink the image by this amount, then set our end-state in the animation to bounds, above, which is the original size before we apply the shrinkValue.
+            let shrinkValue: CGFloat = 60
+            
+            // shrink our imageToPunch by the shrinkValue set above
+            self.imageToPunch.bounds = CGRect(x: self.imageToPunch.bounds.origin.x + shrinkValue, y: self.imageToPunch.bounds.origin.y + shrinkValue, width: self.imageToPunch.bounds.size.width - shrinkValue, height: self.imageToPunch.bounds.size.height - shrinkValue)
+            
+            // then animate it back out to the original bounds, usingSpringWithDamping will give it some bounce.
+            // withDuration is in seconds, usingSpringWithDamping will have no spring at 1, so 0.2 is pretty springy. initialSpringVelocity determines how strong the spring starts off. Higher numbers are 'stronger'.
+            UIView.animate(withDuration: 0.75, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: [], animations: { self.imageToPunch.bounds = bounds }, completion: nil)
+        })
     }
     
     // Basically the same function we'd implemented earlier, with the addition of an inout parameter so we can update any audioPlayer we pass into the function.
